@@ -7,12 +7,19 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class CategoryVC: UITableViewController {
 
     
-    var categories = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    // Realm
+    let realm = try! Realm()
+    var categoriesRealm: Results<CategoryRealm>?
+    
+    
+    // CoreData
+    //var categories = [Category]()
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,16 +30,27 @@ class CategoryVC: UITableViewController {
 
 //MARK: - TableView
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        //CoreData
+        //return categories.count
+        
+        //Realm
+        return categoriesRealm?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryCell
+        //CoreData
+//        if let name = categories[indexPath.row].name {
+//            cell.updateView(string: name)
+//        }
         
-        let name = categories[indexPath.row].name
+        //Realm
+         let name = categoriesRealm?[indexPath.row].name ?? "Add your category"
+         cell.updateView(string: name)
         
         
-        cell.textLabel?.text = name
+        
+        //cell.textLabel?.text = name
         
         return cell
     }
@@ -47,8 +65,19 @@ class CategoryVC: UITableViewController {
             // set index path of selected row
             if let indexPath = tableView.indexPathForSelectedRow {
                 // set the value for selectedCategories in TodoVC
-                todoVC.selectedCategory = categories[indexPath.row]
+                
+                //CoreData
+                //todoVC.selectedCategory = categories[indexPath.row]
+                
+                //Realm
+                todoVC.selectedCategory = categoriesRealm?[indexPath.row]
             }
+            
+            let backBtn = UIBarButtonItem()
+            backBtn.title = ""
+            backBtn.tintColor = #colorLiteral(red: 0.1225796863, green: 0.7601103187, blue: 0.06077206135, alpha: 1)
+            
+            navigationItem.backBarButtonItem = backBtn
         }
     }
     
@@ -61,10 +90,17 @@ class CategoryVC: UITableViewController {
         let action = UIAlertAction(title: "ADD", style: .default) { action in
             
             if let text = textField.text {
-                let newCategory = Category(context: self.context)
+                // CoreData
+                //let newCategory = Category(context: self.context)
+                //newCategory.name = textField.text!
+                //self.categories.append(newCategory)
+                //self.saveCategories()
+                
+                // Realm
+                var newCategory = CategoryRealm()
                 newCategory.name = textField.text!
-                self.categories.append(newCategory)
-                self.saveCategories()
+                self.save(category: newCategory)
+                
             }
         }
         
@@ -86,23 +122,46 @@ class CategoryVC: UITableViewController {
     //MARK: - CRUD
     
     // save
-    func saveCategories() {
+    
+    //CoreData
+//    func saveCategories() {
+//
+//        do {
+//            try context.save()
+//        } catch {
+//            print("Saving categories erro: \(error.localizedDescription)")
+//        }
+//        tableView.reloadData()
+//    }
+    
+    // Realm
+    func save(category: CategoryRealm) {
         do {
-            try context.save()
+            try realm.write({
+                realm.add(category)
+            })
         } catch {
-            print("Saving categories erro: \(error.localizedDescription)")
+            print("Saving realm error: \(error.localizedDescription)")
         }
         tableView.reloadData()
     }
     
     // read
+    
+    // CoreData
+//    func loadCategories() {
+//        let request = Category.fetchRequest()
+//        do {
+//            categories = try context.fetch(request)
+//        } catch {
+//            print("Loading categories error: \(error.localizedDescription)")
+//        }
+//        tableView.reloadData()
+//    }
+    
+    // Realm
     func loadCategories() {
-        let request = Category.fetchRequest()
-        do {
-            categories = try context.fetch(request)
-        } catch {
-            print("Loading categories error: \(error.localizedDescription)")
-        }
+        categoriesRealm = realm.objects(CategoryRealm.self)
         tableView.reloadData()
     }
     

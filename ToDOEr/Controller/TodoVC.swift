@@ -7,21 +7,35 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class TodoVC: UITableViewController {
 
+    // CoreData
+    //var items: [Item] = []
     
-    var items: [Item] = []
+    // Realm
+    let realm = try! Realm()
+                // auto updating container
+    var items: Results<ItemRealm>?
     
-    var selectedCategory: Category? {
-        // happens as soon as we set value
+    // CoreData
+//    var selectedCategory: Category? {
+//        // happens as soon as we set value
+//        didSet{
+//            loadItems()
+//        }
+//    }
+    
+    // Realm
+    var selectedCategory: CategoryRealm? {
         didSet{
             loadItems()
         }
     }
     
     //CoreData
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    //let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     
     
@@ -51,27 +65,59 @@ class TodoVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return items.count
+        
+        // CoreData
+        //return items.count
+        
+        // Realm
+        // if items not nil return count otherwise return 1
+        return items?.count ?? 1
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath) as! ItemsCell
         // Configure the cell...
         
-        
-        let item = items[indexPath.row]
-        
-        
-        
-        cell.textLabel?.text = item.title
+        // CoreData
+        //let item = items[indexPath.row]
         
         
-        if item.done == true {
-            cell.accessoryType = .checkmark
+        // Realm
+        if let item = items?[indexPath.row] {
+            
+            // Realm
+            let title = item.title
+            cell.updateView(string: title)
+            
+            if item.done == true {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
         } else {
-            cell.accessoryType = .none
+            let noTitle = "No items"
+            cell.updateView(string: noTitle)
         }
+        
+        
+        
+        
+        // CoreData
+//        if let title = item.title {
+//            cell.updateView(string: title)
+//        }
+        
+
+        
+        //cell.textLabel?.text = item.title
+        
+        
+//        if item.done == true {
+//            cell.accessoryType = .checkmark
+//        } else {
+//            cell.accessoryType = .none
+//        }
         
 
         return cell
@@ -89,9 +135,24 @@ class TodoVC: UITableViewController {
         // delete data from array
         //items.remove(at: indexPath.row)
         
-        items[indexPath.row].done = !items[indexPath.row].done
-        saveItems()
         
+        // CoreData
+//        items[indexPath.row].done = !items[indexPath.row].done
+//        saveItems()
+        
+        
+        // Realm
+        if let item = items?[indexPath.row] {
+            do {
+                try realm.write({
+                    item.done = !item.done
+                    realm.delete(item)
+                })
+            } catch {
+                print("Saving error in didSelectRowat: \(error.localizedDescription)")
+            }
+        }
+        tableView.reloadData()
         
         
         tableView.deselectRow(at: indexPath, animated: true)
@@ -115,18 +176,38 @@ class TodoVC: UITableViewController {
                 //let newItem = Item()
                 
                 //CoreData
-                let newItem = Item(context: self.context)
+//                let newItem = Item(context: self.context)
+//                newItem.title = textField.text!
+//                newItem.done = false
+//                // set the relationship
+//                newItem.parentCategory = self.selectedCategory
+//                self.items.append(newItem)
+//                self.saveItems()
                 
-                newItem.title = textField.text!
-                newItem.done = false
-                // set the relationship
-                newItem.parentCategory = self.selectedCategory
                 
-                self.items.append(newItem)
+                // Realm
+                if let currentCategory = self.selectedCategory {
+                    // saving datat
+                    do {
+                        try self.realm.write({
+                            let newItem = ItemRealm()
+                            newItem.title = textField.text!
+                            currentCategory.items.append(newItem)
+                        })
+                    } catch {
+                        print("Saving data error: \(error.localizedDescription)")
+                    }
+                    
+                }
+                self.tableView.reloadData()
                 
                 
-                self.saveItems()
                 
+                
+                
+                
+                
+                // User defaults
                 // saving current changes
                 //self.defaults.set(self.items, forKey: "TodoItems")
                 
@@ -147,16 +228,27 @@ class TodoVC: UITableViewController {
     }
     
     //MARK: - CRUD
+    
+    
+    
+    
+    
+    
     // Create / Update
-    func saveItems() {
+//    func saveItems() {
+        // Realm
+        
+
         
         // CoreData
-        do {
-            try context.save()
-        } catch {
-            print("Saving error: \(error.localizedDescription)")
-        }
-        self.tableView.reloadData()
+//        do {
+//            try context.save()
+//        } catch {
+//            print("Saving error: \(error.localizedDescription)")
+//        }
+//        self.tableView.reloadData()
+        
+        
         
         
         // NSCoder
@@ -170,43 +262,54 @@ class TodoVC: UITableViewController {
 //            print(error.localizedDescription)
 //        }
 //        self.tableView.reloadData()
-    }
+//    }
+    
+    
+    
     
     // Read                                         // default value
-    func loadItems(request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
-        // CoreData
-        //let request: NSFetchRequest<Item> = Item.fetchRequest()
-        
-        
-        // set loading for only proper items
-        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
-        
-        // addition predicate
-        if let additionalPredicate = predicate {
-            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
-            request.predicate = compoundPredicate
-        } else {
-            request.predicate = categoryPredicate
-        }
-        
-        
-        
-        do {
-            items = try context.fetch(request)
-        } catch {
-            print("Fetch error: \(error.localizedDescription)")
-        }
-        
-        tableView.reloadData()
-        //NSCoder
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                items = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print(error.localizedDescription)
-//            }
+    
+    // CoreData
+//    func loadItems(request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil) {
+//        // CoreData
+//        //let request: NSFetchRequest<Item> = Item.fetchRequest()
+//
+//
+//        // set loading for only proper items
+//        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+//
+//        // addition predicate
+//        if let additionalPredicate = predicate {
+//            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+//            request.predicate = compoundPredicate
+//        } else {
+//            request.predicate = categoryPredicate
 //        }
+//
+//        do {
+//            items = try context.fetch(request)
+//        } catch {
+//            print("Fetch error: \(error.localizedDescription)")
+//        }
+//
+//        tableView.reloadData()
+//        //NSCoder
+////        if let data = try? Data(contentsOf: dataFilePath!) {
+////            let decoder = PropertyListDecoder()
+////            do {
+////                items = try decoder.decode([Item].self, from: data)
+////            } catch {
+////                print(error.localizedDescription)
+////            }
+////        }
+//    }
+    
+    
+    
+    // Realm
+    func loadItems() {
+        items = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        tableView.reloadData()
     }
     
     
@@ -231,7 +334,7 @@ extension TodoVC: UISearchBarDelegate {
         let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
         request.sortDescriptors = [sortDescriptor]
       // perform reauest // request of proper items
-        loadItems(request: request, predicate: predicate)
+        //loadItems(request: request, predicate: predicate)
         
         // close the keyboard after search
         DispatchQueue.main.async {
@@ -241,7 +344,7 @@ extension TodoVC: UISearchBarDelegate {
     
     // Get back to all items
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text?.count == 0{
+        if searchBar.text?.count == 0 {
             loadItems()
             
             // close the keybord and hide searchbar mark
