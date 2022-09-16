@@ -155,7 +155,7 @@ class TodoVC: UITableViewController {
         tableView.reloadData()
         
         
-        tableView.deselectRow(at: indexPath, animated: true)
+        
         
         
         
@@ -172,10 +172,10 @@ class TodoVC: UITableViewController {
             //print(textField.text)
             if let todo = textField.text {
                 
-                // NSCoder
+        // NSCoder
                 //let newItem = Item()
                 
-                //CoreData
+        //CoreData
 //                let newItem = Item(context: self.context)
 //                newItem.title = textField.text!
 //                newItem.done = false
@@ -185,13 +185,14 @@ class TodoVC: UITableViewController {
 //                self.saveItems()
                 
                 
-                // Realm
+        // Realm
                 if let currentCategory = self.selectedCategory {
                     // saving datat
                     do {
                         try self.realm.write({
                             let newItem = ItemRealm()
                             newItem.title = textField.text!
+                            newItem.dateCreated = Date()
                             currentCategory.items.append(newItem)
                         })
                     } catch {
@@ -200,14 +201,9 @@ class TodoVC: UITableViewController {
                     
                 }
                 self.tableView.reloadData()
+      
                 
-                
-                
-                
-                
-                
-                
-                // User defaults
+        // User defaults
                 // saving current changes
                 //self.defaults.set(self.items, forKey: "TodoItems")
                 
@@ -219,20 +215,13 @@ class TodoVC: UITableViewController {
         
         alert.addTextField { alertTextField in
             alertTextField.placeholder = "Create new item"
-            
             textField = alertTextField
         }
         alert.addAction(action)
-        
         present(alert, animated: true, completion: nil)
     }
     
     //MARK: - CRUD
-    
-    
-    
-    
-    
     
     // Create / Update
 //    func saveItems() {
@@ -321,38 +310,61 @@ class TodoVC: UITableViewController {
     
 }
 
-//MARK: - SearchBar
+//MARK: - SearchBar Core Data
+//extension TodoVC: UISearchBarDelegate {
+//    // Searching
+//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//        // read data
+//        let request: NSFetchRequest<Item> = Item.fetchRequest()
+//      //create a search method   // if title of Item  //Contains //value    //this value
+//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+//        request.predicate = predicate
+//      // set sort properties
+//        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+//        request.sortDescriptors = [sortDescriptor]
+//      // perform reauest // request of proper items
+//        //loadItems(request: request, predicate: predicate)
+//
+//        // close the keyboard after search
+//        DispatchQueue.main.async {
+//            searchBar.resignFirstResponder()
+//        }
+//    }
+//
+    // Get back to all items
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+//        if searchBar.text?.count == 0 {
+//            loadItems()
+//
+//            // close the keybord and hide searchbar mark
+//            DispatchQueue.main.async {
+//                searchBar.resignFirstResponder()
+//            }
+//
+//        }
+//
+//    }
+//}
+
+//MARK: - SearchBar Delegate Realm
 extension TodoVC: UISearchBarDelegate {
-    // Searching
+    // searching
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        // read data
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-      //create a search method   // if title of Item  //Contains //value    //this value
-        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        request.predicate = predicate
-      // set sort properties
-        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        request.sortDescriptors = [sortDescriptor]
-      // perform reauest // request of proper items
-        //loadItems(request: request, predicate: predicate)
-        
-        // close the keyboard after search
-        DispatchQueue.main.async {
-            searchBar.resignFirstResponder()
-        }
+                          // filter through titels   with search bar text    sorted by date
+        items = items?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: false)
+        tableView.reloadData()
     }
     
-    // Get back to all items
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
-            
+
             // close the keybord and hide searchbar mark
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
-            
+
         }
-        
+
     }
 }

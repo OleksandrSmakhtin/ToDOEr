@@ -11,6 +11,7 @@ import RealmSwift
 class ItemRealm: Object {
     @objc dynamic var title: String = ""
     @objc dynamic var done: Bool = false
+    @objc dynamic var dateCreated: Date?
     
     // Relationship
                                     // parent category               // property

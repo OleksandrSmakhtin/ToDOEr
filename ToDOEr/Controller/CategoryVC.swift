@@ -73,6 +73,7 @@ class CategoryVC: UITableViewController {
                 todoVC.selectedCategory = categoriesRealm?[indexPath.row]
             }
             
+            // change back btn in todoVC
             let backBtn = UIBarButtonItem()
             backBtn.title = ""
             backBtn.tintColor = #colorLiteral(red: 0.1225796863, green: 0.7601103187, blue: 0.06077206135, alpha: 1)
