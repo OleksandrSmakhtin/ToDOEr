@@ -146,11 +146,28 @@ class TodoVC: UITableViewController {
             do {
                 try realm.write({
                     item.done = !item.done
-                    realm.delete(item)
+                    
                 })
             } catch {
                 print("Saving error in didSelectRowat: \(error.localizedDescription)")
             }
+            
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                do {
+                    try self.realm.write({
+                        //item.done = !item.done
+                        self.realm.delete(item)
+                        self.tableView.reloadData()
+                        
+                    })
+                } catch {
+                    print("Saving error in didSelectRowat: \(error.localizedDescription)")
+                }
+            }
+            
+            
+            
         }
         tableView.reloadData()
         

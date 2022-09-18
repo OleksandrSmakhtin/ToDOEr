@@ -47,9 +47,7 @@ class CategoryVC: UITableViewController {
         //Realm
          let name = categoriesRealm?[indexPath.row].name ?? "Add your category"
          cell.updateView(string: name)
-        
-        
-        
+
         //cell.textLabel?.text = name
         
         return cell
@@ -58,6 +56,44 @@ class CategoryVC: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "goToItems", sender: self)
     }
+    // editing ability - true
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    // adding delete action
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let indPathRow = indexPath.row
+        let deleteAction = UIContextualAction(style: .destructive, title: "") { action,
+            view, completionHandler in
+            view.backgroundColor = .black
+            
+            // deleting from realm and from table view
+            if let categoryForDelete = self.categoriesRealm?[indPathRow] {
+                do {
+                    try self.realm.write({
+                        self.realm.delete(categoryForDelete)
+                        self.tableView.reloadData()
+                    })
+                } catch {
+                    print("error")
+                }
+            }
+            completionHandler(true)
+        }
+        
+        deleteAction.backgroundColor = .black
+        deleteAction.image = UIImage(named: "DELETE")
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
+        
+        
+    }
+    
+    
+    
 //MARK: - Prepare
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
