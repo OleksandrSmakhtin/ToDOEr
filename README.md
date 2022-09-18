@@ -3,7 +3,7 @@
 
 ## Description
 ToDOEr - is a cool hacker-styled to-do app with a list of your categories and a list of your tasks. 
-In the app, I represented different methods to save data: CoreData, UserDefaults, and Realm.
+In the app, I represented different methods of saving data: CoreData, UserDefaults, and Realm.
 Eventually, I settled on using Realm. In the "Category" screen you can add a new category with a help of UIAlertController by tapping the "plus" button.
 You also can swipe right and delete the selected category.
 Every item belongs to a proper category by setting relationships. As in the "Category" screen, you also can add your item by tapping on a "plus" button.
