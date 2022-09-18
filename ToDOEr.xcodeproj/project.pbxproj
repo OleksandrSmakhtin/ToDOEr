@@ -10,7 +10,6 @@
 		4439827428C5296100922BF6 /* CategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4439827328C5296100922BF6 /* CategoryVC.swift */; };
 		444B5F1728C29262004C0E36 /* ItemForNSCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444B5F1628C29262004C0E36 /* ItemForNSCoder.swift */; };
 		444B5F1A28C36C50004C0E36 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 444B5F1828C36C50004C0E36 /* DataModel.xcdatamodeld */; };
-		447A433528D7994D00D9DE66 /* SwipeCellKit in Frameworks */ = {isa = PBXBuildFile; productRef = 447A433428D7994D00D9DE66 /* SwipeCellKit */; };
 		44AFA8AB28C62E840099D544 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 44AFA8AA28C62E840099D544 /* Realm */; };
 		44AFA8AD28C62E840099D544 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 44AFA8AC28C62E840099D544 /* RealmSwift */; };
 		44AFA8B128C6390F0099D544 /* CategoryRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44AFA8B028C6390F0099D544 /* CategoryRealm.swift */; };
@@ -49,7 +48,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				44AFA8AD28C62E840099D544 /* RealmSwift in Frameworks */,
-				447A433528D7994D00D9DE66 /* SwipeCellKit in Frameworks */,
 				44AFA8AB28C62E840099D544 /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,7 +151,6 @@
 			packageProductDependencies = (
 				44AFA8AA28C62E840099D544 /* Realm */,
 				44AFA8AC28C62E840099D544 /* RealmSwift */,
-				447A433428D7994D00D9DE66 /* SwipeCellKit */,
 			);
 			productName = ToDOEr;
 			productReference = 44F3296F28BD117E008CF7B4 /* ToDOEr.app */;
@@ -185,7 +182,6 @@
 			mainGroup = 44F3296628BD117E008CF7B4;
 			packageReferences = (
 				44AFA8A928C62E840099D544 /* XCRemoteSwiftPackageReference "realm-swift" */,
-				447A433328D7994D00D9DE66 /* XCRemoteSwiftPackageReference "SwipeCellKit" */,
 			);
 			productRefGroup = 44F3297028BD117E008CF7B4 /* Products */;
 			projectDirPath = "";
@@ -376,8 +372,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -385,9 +382,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smakhtin.todoer.ToDOEr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -404,8 +404,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -413,9 +413,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.smakhtin.todoer.ToDOEr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -443,14 +446,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		447A433328D7994D00D9DE66 /* XCRemoteSwiftPackageReference "SwipeCellKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwipeCellKit/SwipeCellKit";
-			requirement = {
-				kind = exactVersion;
-				version = 2.7.1;
-			};
-		};
 		44AFA8A928C62E840099D544 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -462,11 +457,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		447A433428D7994D00D9DE66 /* SwipeCellKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 447A433328D7994D00D9DE66 /* XCRemoteSwiftPackageReference "SwipeCellKit" */;
-			productName = SwipeCellKit;
-		};
 		44AFA8AA28C62E840099D544 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 44AFA8A928C62E840099D544 /* XCRemoteSwiftPackageReference "realm-swift" */;

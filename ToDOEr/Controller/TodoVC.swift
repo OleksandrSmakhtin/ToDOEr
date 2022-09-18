@@ -146,6 +146,7 @@ class TodoVC: UITableViewController {
             do {
                 try realm.write({
                     item.done = !item.done
+                    self.tableView.allowsSelection = false
                     
                 })
             } catch {
@@ -158,6 +159,7 @@ class TodoVC: UITableViewController {
                     try self.realm.write({
                         //item.done = !item.done
                         self.realm.delete(item)
+                        self.tableView.allowsSelection = true
                         self.tableView.reloadData()
                         
                     })
